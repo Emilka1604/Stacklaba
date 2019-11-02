@@ -1,5 +1,5 @@
 #pragma once
-#include <iostream> //sdhififhuihfiufhifu
+#include <iostream> //sdhififhuihfiuf
 template< class T >
 class Stack {
 	T* Conteiner;

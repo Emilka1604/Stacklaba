@@ -5,7 +5,7 @@
 //
 // Тестирование битового поля и множества
 
-#include <iomanip>
+#include <iomanip> //giggg
 
 #include "stack.h"
 void main() {
