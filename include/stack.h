@@ -52,14 +52,16 @@ void Stack<T>::push(const T& value) {
 	else {
 		int i;
 		PE = Size + Size / 3;
-		T* p = new T[PE];
+		T* p = new T[Size];
 		for (i = 0; i < Size; i++)
 			p[i] = Conteiner[i];
-		for (i = Size; i < PE; i++)
-			p[i] = 0;
 		delete[] Conteiner;
-		Conteiner = p;
+		Conteiner = new T[PE];
+		for (i = 0; i < Size; i++)
+			Conteiner[i] = p[i];
 		delete[] p;
+		for (i = Size; i < PE; i++)
+			Conteiner[i] = 0;
 		Conteiner[Size] = value;
 		Size++;
 	}
@@ -76,13 +78,15 @@ void Stack<T>::pop() {
 		if ((Size = PE / 2) && (Size > 5)) {
 			int i;
 			PE = Size * 4 / 3;
-			T* p = new T[PE];
+			T* p = new T[Size];
 			for (i = 0; i < Size; i++)
 				p[i] = Conteiner[i];
-			for (i = Size; i < PE; i++)
-				p[i] = 0;
 			delete[] Conteiner;
-			Conteiner = p;
+			Conteiner = new T[PE];
+			for (i = 0; i < Size; i++)
+				Conteiner[i] = p[i];
+			for (i = Size; i < PE; i++)
+				Conteiner[i] = 0;
 			delete[] p;
 			Conteiner[Size - 1] = 0;
 			Size--;

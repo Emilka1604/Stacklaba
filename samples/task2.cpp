@@ -9,6 +9,13 @@
 
 #include "stack.h"
 void main() {
-	ochered och;
-	och.push(3);
+	Stack<int> st;
+	int i;
+	for (i = 0; i < 20; i++) {
+		st.push(i);
+		std::cout << st.top() << " ";;
+	}
+	for (i = 0; i < 20; i++) {
+		st.pop();
+	}
 }
