@@ -1,5 +1,5 @@
 #pragma once
-#include <iostream>
+#include <iostream> //sdhififhuihfiuf
 template< class T >
 class Stack {
 	T* Conteiner;
@@ -16,11 +16,11 @@ public:
 	bool empty();
 	Stack& operator=(const Stack& st);
 	bool operator==(Stack st);
- };
+};
 template <class T>
 Stack< T >::Stack() {
 	Size = 0;
-	PE = 10;
+	PE = 5;
 	Conteiner = new T[PE];
 	for (int i = 0; i < PE; i++)
 		Conteiner[i] = 0;
@@ -52,13 +52,16 @@ void Stack<T>::push(const T& value) {
 	else {
 		int i;
 		PE = Size + Size / 3;
-		T* p = new T[PE];
+		T* p = new T[Size];
 		for (i = 0; i < Size; i++)
 			p[i] = Conteiner[i];
-		for (i = Size; i < PE; i++)
-			p[i] = 0;
 		delete[] Conteiner;
-		Conteiner = p;
+		Conteiner = new T[PE];
+		for (i = 0; i < Size; i++)
+			Conteiner[i] = p[i];
+		delete[] p;
+		for (i = Size; i < PE; i++)
+			Conteiner[i] = 0;
 		Conteiner[Size] = value;
 		Size++;
 	}
@@ -72,16 +75,27 @@ int Stack<T>::size() {
 template<class T>
 void Stack<T>::pop() {
 	if (!(this->empty())) {
-		int i;
-		PE--;
-		Size--;
-		T* p = new T[PE];
-		for (i = 0; i < Size; i++)
-			p[i] = Conteiner[i];
-		for (i = Size; i < PE; i++)
-			p[i] = 0;
-		delete[] Conteiner;
-		Conteiner = p;
+		if ((Size = PE / 2) && (Size > 5)) {
+			int i;
+			PE = Size * 4 / 3;
+			T* p = new T[Size];
+			for (i = 0; i < Size; i++)
+				p[i] = Conteiner[i];
+			delete[] Conteiner;
+			Conteiner = new T[PE];
+			for (i = 0; i < Size; i++)
+				Conteiner[i] = p[i];
+			for (i = Size; i < PE; i++)
+				Conteiner[i] = 0;
+			delete[] p;
+			Conteiner[Size - 1] = 0;
+			Size--;
+		}
+		else {
+			Conteiner[Size - 1] = 0;
+			Size--;
+
+		}
 	}
 	else
 		throw "not correct";
@@ -134,6 +148,7 @@ bool Stack<T>::operator==(Stack<T> st) {
 class ochered {
 private:
 	Stack<int> st1, st2;
+	int ind;
 public:
 	ochered();
 	ochered(const ochered&);
@@ -146,56 +161,109 @@ public:
 	int size();
 };
 void ochered::push(int value) {
-	if (st1.empty())
+	if (st1.empty() && st2.empty()) {
 		st1.push(value);
+		ind = 1;
+	}
 	else {
-		int i;
-		int s = st1.size();
-		for (i = 0; i < s; i++) {
-			st2.push(st1.top());
-			st1.pop();
+		if (ind == 1) {
+			int i;
+			int s = st1.size();
+			for (i = 0; i < s; i++) {
+				st2.push(st1.top());
+				st1.pop();
+			}
+			st2.push(value);
+			ind = 2;
 		}
-		st2.push(value);
-		for (i = 0; i < s + 1; i++) {
-			st1.push(st2.top());
-			st2.pop();
-		}
+		else
+			st2.push(value);
 	}
 }
 ochered::ochered(const ochered& och) {
 	st1 = och.st1;
+	st2 = och.st2;
+	ind = och.ind;
 }
+
 void ochered::pop() {
-	st1.pop();
+	if (st1.empty() && st2.empty()) {
+		throw "Îøèáêà";
+	}
+	else {
+		if (ind == 1)
+			st1.pop();
+
+		else {
+			int i;
+			int s = st2.size();
+			for (i = 0; i < s; i++) {
+				st1.push(st2.top());
+				st2.pop();
+			}
+			st1.pop();
+			ind = 1;
+		}
+	}
 }
 int ochered::front() {
-	return st1.top();
+
+	if (st1.empty() && st2.empty()) {
+		throw "Îøèáêà";
+	}
+	else {
+		if (ind == 1)
+			return(st1.top());
+
+		else {
+			int i;
+			int s = st2.size();
+			for (i = 0; i < s; i++) {
+				st1.push(st2.top());
+				st2.pop();
+			}
+			ind = 1;
+			return(st1.top());
+		}
+	}
 }
 int ochered::back() {
-	int i;
-	int s = st1.size();
-	for (i = 0; i < s; i++) {
-		st2.push(st1.top());
-		st1.pop();
+	if (st1.empty() && st2.empty()) {
+		throw "Îøèáêà";
 	}
-	int a = st2.top();
-	for (i = 0; i < s; i++) {
-		st1.push(st2.top());
-		st2.pop();
+	else {
+		if (ind == 2)
+			st1.top();
+
+		else {
+			int i;
+			int s = st1.size();
+			for (i = 0; i < s; i++) {
+				st2.push(st1.top());
+				st1.pop();
+			}
+			st2.top();
+			ind = 2;
+		}
 	}
-	return a;
 }
 bool ochered::empty() {
-	return st1.empty();
+	return (st1.empty() && st2.empty());
 }
 ochered& ochered::operator=(const ochered& och) {
 	st1 = och.st1;
+	st2 = och.st2;
+	ind = och.ind;
 	return *this;
 }
 ochered::ochered() : st1(), st2() {
+	ind = 1;
 }
 int ochered::size() {
-	return st1.size();
+	if (ind == 1)
+		return st1.size();
+	else
+		return st2.size();
 }
 
 
